@@ -82,13 +82,47 @@ export default function App() {
   const [picker, setPicker] = useState(false)
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
+  const [shotUrl, setShotUrl] = useState<string | null>(null)
   const cardRef = useRef<HTMLDivElement>(null)
+  const camRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     openDb()
     fetch('/api/tree').then((r) => r.json()).then(setTree)
     fetch('/api/gold').then((r) => r.json()).then(setGold)
   }, [])
+
+  async function ingestFile(file: File) {
+    setErr('')
+    setBusy(true)
+    try {
+      if (shotUrl) URL.revokeObjectURL(shotUrl)
+      const url = URL.createObjectURL(file)
+      setShotUrl(url)
+      const fd = new FormData()
+      fd.append('image', file)
+      const r = await fetch('/api/ingest', { method: 'POST', body: fd })
+      if (r.status === 503) throw new Error('识别未配置')
+      if (!r.ok) {
+        const body = await r.json().catch(() => ({}))
+        throw new Error(typeof (body as { detail?: unknown }).detail === 'string' ? (body as { detail: string }).detail : '识别失败')
+      }
+      const ing = await r.json()
+      await openItem({
+        id: '拍',
+        stem: ing.stem,
+        options: ing.options || undefined,
+        knowledge_id: ing.knowledge_id,
+        knowledge_label: '',
+        item_type: '',
+        error_constraint: '',
+      })
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : '识别失败')
+    } finally {
+      setBusy(false)
+    }
+  }
 
   async function openItem(g: Gold) {
     setErr('')
@@ -128,7 +162,6 @@ export default function App() {
     setPage('var')
   }
 
-
   async function sendCard(asPdf = false) {
     if (!cardRef.current || !cur || kept.length === 0) return
     setBusy(true)
@@ -157,16 +190,34 @@ export default function App() {
           <div className="topbar">
             <div>
               <h1>错题本</h1>
-              <p className="sub">评测集 v0.2 · 30 道金标</p>
+              <p className="sub">拍错题，校对知识点，出变式</p>
             </div>
           </div>
           <div className="scroll">
+            <input
+              ref={camRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              hidden
+              onChange={(e) => {
+                const f = e.target.files?.[0]
+                e.target.value = ''
+                if (f) void ingestFile(f)
+              }}
+            />
+            {err && <p className="sub">{err}</p>}
             {gold.map((g) => (
               <div key={g.id} className="card item" onClick={() => openItem(g)}>
                 <span className="id">{g.id}</span>
                 <MathText text={g.stem} />
               </div>
             ))}
+          </div>
+          <div className="cta">
+            <button className="primary" disabled={busy} onClick={() => camRef.current?.click()}>
+              {busy ? '识别中' : '拍照录入'}
+            </button>
           </div>
         </>
       )}
@@ -183,6 +234,9 @@ export default function App() {
           <div className="scroll">
             <div className="card">
               <span className="badge">原题 {cur.id}</span>
+              {shotUrl && cur.id === '拍' && (
+                <img className="preview" src={shotUrl} alt="拍到的题" />
+              )}
               <div><MathText text={cur.stem} /></div>
               {cur.options?.map((o) => (
                 <div key={o}>{o}</div>
@@ -232,7 +286,7 @@ export default function App() {
           <div className="scroll">
             <div className="qty">
               题量
-              <button onClick={() => setN((x) => Math.max(2, x - 1))}>−</button>
+              <button onClick={() => setN((x) => Math.max(2, x - 1))}−</button>
               <b>{n}</b>
               <button onClick={() => setN((x) => Math.min(5, x + 1))}>+</button>
             </div>
