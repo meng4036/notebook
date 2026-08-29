@@ -286,7 +286,7 @@ export default function App() {
           <div className="scroll">
             <div className="qty">
               题量
-              <button onClick={() => setN((x) => Math.max(2, x - 1))}−</button>
+              <button onClick={() => setN((x) => Math.max(2, x - 1))}>−</button>
               <b>{n}</b>
               <button onClick={() => setN((x) => Math.min(5, x + 1))}>+</button>
             </div>
