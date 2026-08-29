@@ -192,7 +192,7 @@
     "id": "20",
     "knowledge_id": "cong.sas",
     "item_type": "判断",
-    "stem": "已知 AB=DE，AC=DF，∠B=∠E，能用 SAS 判定 △ABC≅△DEF 吗？",
+    "stem": "已知 AB=DE，AC=DF，∠B=∠E，能用 SAS 判定 △ABC≌△DEF 吗？",
     "error_constraint": "已知角不是夹角。",
     "typical_wrong": "写成 SAS 判定全等。",
     "correct": "不能。∠B、∠E 不是两已知边的夹角，属于 SSA。"
