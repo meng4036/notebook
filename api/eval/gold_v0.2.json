@@ -1,0 +1,290 @@
+[
+  {
+    "id": "01",
+    "knowledge_id": "poly.perfect-square",
+    "item_type": "判断",
+    "stem": "判断 (x+y)²=x²+y² 是否正确。",
+    "error_constraint": "漏中间项 2ab，不能变成平方差。",
+    "typical_wrong": "认为正确。",
+    "correct": "错误。应为 x²+2xy+y²。"
+  },
+  {
+    "id": "02",
+    "knowledge_id": "poly.perfect-square",
+    "item_type": "判断",
+    "stem": "判断 (2x+y)²=4x²+2xy+y² 是否正确。",
+    "error_constraint": "系数漏平方或 2ab 少乘 2。",
+    "typical_wrong": "认为正确。",
+    "correct": "错误。应为 4x²+4xy+y²。"
+  },
+  {
+    "id": "03",
+    "knowledge_id": "poly.perfect-square",
+    "item_type": "选择",
+    "stem": "若 9x²+kxy+4y² 是一个完全平方式，则 k 的值为（  ）",
+    "options": [
+      "A.6",
+      "B.±6",
+      "C.12",
+      "D.±12"
+    ],
+    "error_constraint": "中间项系数是积的 2 倍，且有正负。",
+    "typical_wrong": "A 或 B（把 2×3×2 当成 6，或只取正）。",
+    "correct": "D。2×3x×2y=12xy，可正可负，k=±12。"
+  },
+  {
+    "id": "04",
+    "knowledge_id": "poly.factor-def",
+    "item_type": "填空",
+    "stem": "观察从左到右的变形：(1) -6a³b³=(2a²b)(-3ab²)；(2) ma-mb+c=m(a-b)+c；(3) 6x²+12xy+6y²=6(x+y)²；(4) (3a+2b)(3a-2b)=9a²-4b²。其中是因式分解的有______。",
+    "error_constraint": "混进「整式乘法」或「单项式」，结果必须是积。",
+    "typical_wrong": "填 (1)(3)（把单项式分解也算进去）。",
+    "correct": "(3)。(1) 不是多项式；(2) 仍是和；(4) 是整式乘法（方向反了）。"
+  },
+  {
+    "id": "05",
+    "knowledge_id": "poly.factor-def",
+    "item_type": "因式分解",
+    "stem": "因式分解 4a²-4a+1。",
+    "error_constraint": "结果必须是积，不能留「尾巴」。",
+    "typical_wrong": "4a(a-1)+1（结果仍是和）。",
+    "correct": "(2a-1)²。"
+  },
+  {
+    "id": "06",
+    "knowledge_id": "poly.common-factor",
+    "item_type": "因式分解",
+    "stem": "因式分解 -xy²+2xy-x。",
+    "error_constraint": "三项提公因式后漏常数 1。",
+    "typical_wrong": "-x(y²-2y)（漏最后一项的 1）。",
+    "correct": "-x(y²-2y+1)=-x(y-1)²。"
+  },
+  {
+    "id": "07",
+    "knowledge_id": "poly.diff-of-squares",
+    "item_type": "因式分解",
+    "stem": "因式分解 4a²-36。",
+    "error_constraint": "分解完又做整式乘法，走回头路。",
+    "typical_wrong": "4(a²-9)=4(a+3)(a-3)=4(a²-9)（最后又乘回去）。",
+    "correct": "4(a+3)(a-3)。"
+  },
+  {
+    "id": "08",
+    "knowledge_id": "poly.diff-of-squares",
+    "item_type": "因式分解",
+    "stem": "因式分解 (x²+4)²-16x²。",
+    "error_constraint": "第一步平方差后，因式仍是完全平方，必须再分。",
+    "typical_wrong": "(x²+4+4x)(x²+4-4x) 就停。",
+    "correct": "(x-2)²(x+2)²。"
+  },
+  {
+    "id": "09",
+    "knowledge_id": "poly.common-factor",
+    "item_type": "因式分解",
+    "stem": "因式分解 6m²n-9mn。",
+    "error_constraint": "只提字母、不提数字最大公因数。",
+    "typical_wrong": "mn(6m-9)（系数没提尽）。",
+    "correct": "3mn(2m-3)。"
+  },
+  {
+    "id": "10",
+    "knowledge_id": "poly.common-factor",
+    "item_type": "因式分解",
+    "stem": "因式分解 (a+b)²-a-b。",
+    "error_constraint": "整体提取后漏 1。",
+    "typical_wrong": "(a+b)²-(a+b)=(a+b)(a+b)=(a+b)²。",
+    "correct": "(a+b)(a+b-1)。"
+  },
+  {
+    "id": "11",
+    "knowledge_id": "poly.diff-of-squares",
+    "item_type": "选择",
+    "stem": "利用因式分解，17⁸-15⁸ 能够被（  ）整除。",
+    "options": [
+      "A.18",
+      "B.28",
+      "C.36",
+      "D.64"
+    ],
+    "error_constraint": "连续平方差，问能被谁整除。",
+    "typical_wrong": "乱拆一次就选 18/36。",
+    "correct": "D。17⁸-15⁸=(17⁴-15⁴)(17⁴+15⁴)=…=(17-15)(17+15)…=64×…"
+  },
+  {
+    "id": "12",
+    "knowledge_id": "rad.abs",
+    "item_type": "化简计算",
+    "stem": "化简 √(x-2)²。",
+    "error_constraint": "没有取值范围时必须留绝对值。",
+    "typical_wrong": "x-2。",
+    "correct": "|x-2|。"
+  },
+  {
+    "id": "13",
+    "knowledge_id": "rad.domain",
+    "item_type": "化简计算",
+    "stem": "计算 (√-5)²。",
+    "error_constraint": "先开方后平方，被开方数不能为负。",
+    "typical_wrong": "-5 或 5。",
+    "correct": "无意义。"
+  },
+  {
+    "id": "14",
+    "knowledge_id": "rad.rationalize",
+    "item_type": "化简计算",
+    "stem": "化简 1/(√3-1)。",
+    "error_constraint": "分母是两项根式，必须乘共轑。",
+    "typical_wrong": "分子分母同乘 (√3-1)，去不掉根号。",
+    "correct": "(√3+1)/2。"
+  },
+  {
+    "id": "15",
+    "knowledge_id": "rad.like",
+    "item_type": "化简计算",
+    "stem": "计算 √2+√8。",
+    "error_constraint": "未化简就加减。",
+    "typical_wrong": "√10。",
+    "correct": "3√2。"
+  },
+  {
+    "id": "16",
+    "knowledge_id": "lin.mono",
+    "item_type": "求解",
+    "stem": "一次函数 y=kx+b 中，自变量 -4≤x≤2，相应函数值 -5≤y≤7。求解析式。",
+    "error_constraint": "区间端点对应有递增、递减两种，不能只配一种。",
+    "typical_wrong": "只写 y=2x+3。",
+    "correct": "y=2x+3 或 y=-2x-1。"
+  },
+  {
+    "id": "17",
+    "knowledge_id": "lin.undetermined",
+    "item_type": "求解",
+    "stem": "一次函数 y=kx+b 与两坐标轴围成三角形面积为 8，且过点 (0,2)。求解析式。",
+    "error_constraint": "面积条件导致 |OA| 确定、符号要分类。",
+    "typical_wrong": "只得 y=-(1/4)x+2。",
+    "correct": "y=(1/4)x+2 或 y=-(1/4)x+2。"
+  },
+  {
+    "id": "18",
+    "knowledge_id": "cong.ssa",
+    "item_type": "选择",
+    "stem": "下列条件中，不能判定两个三角形全等的是（  ）",
+    "options": [
+      "A.三边对应相等",
+      "B.两边及夹角对应相等",
+      "C.两边及一边的对角对应相等",
+      "D.两角及夹边对应相等"
+    ],
+    "error_constraint": "角不是夹角，不能判定。不能改成直角三角形 HL。",
+    "typical_wrong": "不选 C，误把 SSA 当 SAS。",
+    "correct": "C。"
+  },
+  {
+    "id": "19",
+    "knowledge_id": "cong.hl",
+    "item_type": "判断",
+    "stem": "两边及其中一边的对角对应相等，能判定两个三角形全等吗？直角三角形的 HL 为什么可以？",
+    "error_constraint": "普通三角形 SSA 打叉；不要把题改成已给直角却仍问 SSA。",
+    "typical_wrong": "认为 SSA 都能判定，或把 HL 用到非直角三角形。",
+    "correct": "一般不能。HL 仅直角三角形，斜边是最长边，不会出现两解。"
+  },
+  {
+    "id": "20",
+    "knowledge_id": "cong.sas",
+    "item_type": "判断",
+    "stem": "已知 AB=DE，AC=DF，∠B=∠E，能用 SAS 判定 △ABC≅△DEF 吗？",
+    "error_constraint": "已知角不是夹角。",
+    "typical_wrong": "写成 SAS 判定全等。",
+    "correct": "不能。∠B、∠E 不是两已知边的夹角，属于 SSA。"
+  },
+  {
+    "id": "21",
+    "knowledge_id": "tri.equilateral",
+    "item_type": "判断",
+    "stem": "已知 a、b、c 是 △ABC 的三边，且 a²+b²+c²-ab-bc-ac=0，判断三角形形状。",
+    "error_constraint": "用因式/配方判等边，不要变成勾股定理题。",
+    "typical_wrong": "直接当勾股，判成直角。",
+    "correct": "配方得 (a-b)²+(b-c)²+(c-a)²=0，故 a=b=c，等边。"
+  },
+  {
+    "id": "22",
+    "knowledge_id": "tri.polygon",
+    "item_type": "求解",
+    "stem": "如果多边形的每个内角都比它相邻的外角的 4 倍多 30°，求这个多边形的内角和及对角线总条数。",
+    "error_constraint": "内角与邻外角互补，再求边数。",
+    "typical_wrong": "用 90° 列方程，或边数算错后不会代公式。",
+    "correct": "x+4x+30=180，x=30，边数=12，内角和=1800°，对角线=54。"
+  },
+  {
+    "id": "23",
+    "knowledge_id": "pyg.converse",
+    "item_type": "选择",
+    "stem": "五根小木棒长 7、15、20、24、25，要摆成两个直角三角形，正确的摆法是哪一组？（选项为四种组合）",
+    "error_constraint": "用逆定理筛选直角，必须先最长边。",
+    "typical_wrong": "不先找最长边，7²+15²=20² 误判。",
+    "correct": "7-24-25（7²+24²=25²）与 15-20-25（15²+20²=25²）。"
+  },
+  {
+    "id": "24",
+    "knowledge_id": "pyg.theorem",
+    "item_type": "求解",
+    "stem": "在 Rt△ABC 中，∠C=90°，AC=6，BC=8，求 AB。",
+    "error_constraint": "直角边平方和等于斜边平方。变式改数字即可。不能变成逆定理。",
+    "typical_wrong": "6+8=14，或 6²+8² 开方后开不尽又乱约。",
+    "correct": "AB=10。"
+  },
+  {
+    "id": "25",
+    "knowledge_id": "para.judge",
+    "item_type": "选择",
+    "stem": "四边形对角线相交于点 O。下列条件中不能判定它是平行四边形的是哪一类：只给一组对边相等、或一组对角相等，而不给「对角线互相平分 / 两组对边平行 / 两组对边相等」等充分条件。",
+    "error_constraint": "缺判定条件的干扰项，不要改成矩形/菱形。",
+    "typical_wrong": "一组对边相等就判平行四边形。",
+    "correct": "一组对边相等不能判定。"
+  },
+  {
+    "id": "26",
+    "knowledge_id": "rect.judge",
+    "item_type": "选择",
+    "stem": "已知四边形是平行四边形，下列条件不能判定它为矩形的是：一组邻边相等（那是菱形）。能判定的：有一个直角 / 对角线相等。",
+    "error_constraint": "矩形 vs 菱形条件混淆。",
+    "typical_wrong": "把「邻边相等」当成矩形条件。",
+    "correct": "邻边相等 → 菱形，不是矩形。"
+  },
+  {
+    "id": "27",
+    "knowledge_id": "sym.axis",
+    "item_type": "判断",
+    "stem": "轴对称图形沿对称轴折叠后完全重合。对应点连线被对称轴垂直平分。判断：只知道对应边相等，能否说明两个图形成轴对称？",
+    "error_constraint": "轴对称 ≠ 全等。不要改成旋转。",
+    "typical_wrong": "全等就当成轴对称。",
+    "correct": "全等不一定轴对称，还要有对称轴，对应点连线被垂直平分。"
+  },
+  {
+    "id": "28",
+    "knowledge_id": "tri.isosceles",
+    "item_type": "求解",
+    "stem": "等腰三角形一腰上的高等于腰长的一半，求顶角。",
+    "error_constraint": "题目没指定腰和底时必须分类。",
+    "typical_wrong": "只讨论顶角为锐角的一种。",
+    "correct": "需分类，顶角可以是 30° 的补角情形等。"
+  },
+  {
+    "id": "29",
+    "knowledge_id": "stat.center",
+    "item_type": "求解",
+    "stem": "10 个班次乘车人数：14，23，16，25，23，28，26，27，23，25。(1) 众数、中位数；(2) 平均数。",
+    "error_constraint": "偶数个数据、有重复值，必须先排序。",
+    "typical_wrong": "中位数不排序；众数当中位数。",
+    "correct": "众数 23，中位数 24，平均数 23。"
+  },
+  {
+    "id": "30",
+    "knowledge_id": "stat.variance",
+    "item_type": "求解",
+    "stem": "甲六次成绩 87，93，88，93，89，90。乙：85，90，90，96，89 及一个未知数。若甲乙平均成绩相同，选发挥更稳定的人。",
+    "error_constraint": "稳定 = 方差小，不是平均高。",
+    "typical_wrong": "平均高就选谁，或方差大当更稳定。",
+    "correct": "先由平均数相同求未知数，再比方差，方差小的更稳定。"
+  }
+]
