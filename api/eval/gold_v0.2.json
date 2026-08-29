@@ -133,7 +133,7 @@
     "knowledge_id": "rad.rationalize",
     "item_type": "化简计算",
     "stem": "化简 1/(√3-1)。",
-    "error_constraint": "分母是两项根式，必须乘共轑。",
+    "error_constraint": "分母是两项根式，必须乘共轭。",
     "typical_wrong": "分子分母同乘 (√3-1)，去不掉根号。",
     "correct": "(√3+1)/2。"
   },
