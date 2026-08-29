@@ -112,3 +112,13 @@ button.ghost { background: #fff; color: var(--green); border: 1.5px solid var(--
 .share-card .kp { font-size: 12px; color: #6b7280; margin-bottom: 14px; }
 .share-card .block { margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb; }
 .share-card .lab { font-size: 12px; color: #1a5342; font-weight: 700; margin-bottom: 6px; }
+
+.preview {
+  width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+  background: var(--bg);
+  border-radius: 10px;
+  margin: 0 0 10px;
+  display: block;
+}

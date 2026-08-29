@@ -23,4 +23,4 @@
 - `MINIMAX_BASE_URL` 可选，默认 `https://api.minimaxi.com/v1`
 - `MINIMAX_MODEL` 可选，默认 `MiniMax-M3`
 
-摄像头 UI 仍等 8 张识别评测通过后再做。评测图 Drive id 见 `api/eval/recog/README.md`。
+PWA 列表页「拍照录入」走相机/相册，`POST /ingest` 后进入校对知识点。无微信 SDK。评测图 Drive id 见 `api/eval/recog/README.md`。
