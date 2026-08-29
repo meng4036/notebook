@@ -3,4 +3,5 @@ api/.venv
 web/dist
 *.pyc
 __pycache__
-.pytest_cache
+.env
+api/.env

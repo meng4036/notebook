@@ -29,13 +29,13 @@ CASES = [
 
 
 def test_ingest_503_without_key(monkeypatch):
-    monkeypatch.delenv("DASHSCOPE_API_KEY", raising=False)
+    monkeypatch.setattr("ingest._api_key", lambda: "")
     r = client.post("/ingest", files={"image": ("x.jpg", b"fake", "image/jpeg")})
     assert r.status_code == 503
 
 
 def test_ingest_clamps_off_tree(monkeypatch):
-    monkeypatch.setenv("DASHSCOPE_API_KEY", "test-key")
+    monkeypatch.setattr("ingest._api_key", lambda: "test-key")
 
     def fake_vl(raw, mime):
         return {
@@ -56,7 +56,7 @@ def test_ingest_clamps_off_tree(monkeypatch):
     assert body["has_figure"] is False
 
 
-@pytest.mark.skipif(not os.environ.get("DASHSCOPE_API_KEY"), reason="no DASHSCOPE_API_KEY")
+@pytest.mark.skipif(not os.environ.get("MINIMAX_API_KEY"), reason="no MINIMAX_API_KEY")
 @pytest.mark.parametrize("filename,needles", CASES)
 def test_ingest_live_recog(filename, needles):
     path = RECOG / filename

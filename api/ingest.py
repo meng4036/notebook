@@ -4,14 +4,15 @@ import base64
 import json
 import os
 import re
+from pathlib import Path
 from typing import Any
 
 from openai import OpenAI
 
 from tagger import NODES, tag
 
-DASHSCOPE_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-DEFAULT_MODEL = "qwen-vl-max"
+DEFAULT_BASE = "https://api.minimaxi.com/v1"
+DEFAULT_MODEL = "MiniMax-M3"
 
 
 class MissingApiKeyError(RuntimeError):
@@ -20,6 +21,27 @@ class MissingApiKeyError(RuntimeError):
 
 class IngestError(RuntimeError):
     pass
+
+
+def _load_env_file() -> None:
+    path = Path(__file__).resolve().parent / ".env"
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        raw = line.strip()
+        if not raw or raw.startswith("#") or "=" not in raw:
+            continue
+        k, _, v = raw.partition("=")
+        k, v = k.strip(), v.strip().strip('"').strip("'")
+        if k and k not in os.environ:
+            os.environ[k] = v
+
+
+_load_env_file()
+
+
+def _api_key() -> str:
+    return os.environ.get("MINIMAX_API_KEY", "").strip()
 
 
 def _tree_lines() -> str:
@@ -43,6 +65,7 @@ def _prompt() -> str:
 
 def _parse_json(text: str) -> dict[str, Any]:
     raw = (text or "").strip()
+    raw = re.sub(r"<think>.*?</think>", "", raw, flags=re.S)
     if raw.startswith("```"):
         raw = re.sub(r"^```(?:json)?\s*", "", raw)
         raw = re.sub(r"\s*```$", "", raw)
@@ -56,28 +79,34 @@ def _parse_json(text: str) -> dict[str, Any]:
 
 
 def _call_vl(raw: bytes, mime: str) -> dict[str, Any]:
-    key = os.environ.get("DASHSCOPE_API_KEY", "").strip()
+    key = _api_key()
     if not key:
-        raise MissingApiKeyError("DASHSCOPE_API_KEY missing")
-    model = os.environ.get("QWEN_VL_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL
+        raise MissingApiKeyError("MINIMAX_API_KEY missing")
+    model = os.environ.get("MINIMAX_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL
+    base = os.environ.get("MINIMAX_BASE_URL", DEFAULT_BASE).strip() or DEFAULT_BASE
     b64 = base64.b64encode(raw).decode("ascii")
     media = mime if mime.startswith("image/") else "image/jpeg"
-    client = OpenAI(api_key=key, base_url=DASHSCOPE_BASE)
+    client = OpenAI(api_key=key, base_url=base)
     resp = client.chat.completions.create(
         model=model,
-        temperature=0,
+        temperature=1,
+        max_completion_tokens=1024,
         messages=[
             {
                 "role": "user",
                 "content": [
                     {
                         "type": "image_url",
-                        "image_url": {"url": f"data:{media};base64,{b64}"},
+                        "image_url": {
+                            "url": f"data:{media};base64,{b64}",
+                            "detail": "high",
+                        },
                     },
                     {"type": "text", "text": _prompt()},
                 ],
             }
         ],
+        extra_body={"thinking": {"type": "disabled"}},
     )
     text = (resp.choices[0].message.content or "").strip()
     return _parse_json(text)
