@@ -3,10 +3,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from ingest import MissingApiKeyError, ingest_image
 from tagger import TREE, NODES, tag
 from variants import generate
 
@@ -75,3 +76,22 @@ def post_variants(body: VariantsIn):
         raise HTTPException(400, "knowledge_id not on tree")
     variants = generate(body.stem, body.knowledge_id, body.error_constraint, body.n or 3)
     return {"variants": variants}
+
+
+@app.post("/ingest")
+async def post_ingest(image: UploadFile = File(...)):
+    try:
+        raw = await image.read()
+        mime = image.content_type or "image/jpeg"
+        result = ingest_image(raw, mime)
+    except MissingApiKeyError as e:
+        raise HTTPException(503, str(e)) from e
+    if result["knowledge_id"] not in NODES:
+        raise HTTPException(400, "knowledge_id not on tree")
+    return {
+        "stem": result["stem"],
+        "options": result["options"],
+        "formula_tex": result["formula_tex"],
+        "has_figure": result["has_figure"],
+        "knowledge_id": result["knowledge_id"],
+    }
