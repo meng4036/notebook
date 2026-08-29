@@ -13,43 +13,61 @@ sys.path.insert(0, str(ROOT))
 from app import app
 from tagger import NODES
 
-pytestmark = pytest.mark.skipif(
-    not (os.environ.get("DASHSCOPE_API_KEY") or "").strip(),
-    reason="DASHSCOPE_API_KEY not set",
-)
-
-RECOG = Path(__file__).resolve().parent / "recog"
 client = TestClient(app)
+RECOG = Path(__file__).resolve().parent / "recog"
 
-# Gold knowledge (same-chapter OK; tests only require tree membership):
-# 01 poly.perfect-square, 06 poly.common-factor, 12 rad.abs, 14 rad.rationalize,
-# 18 cong.ssa, 20 cong.sas, 21 tri.equilateral, 23 pyg.converse
-CASES: list[tuple[str, tuple[str, ...]]] = [
-    ("recog-01-print-perfect-square.jpg", ("(x+y)", "x+y")),
-    ("recog-06-hand-factor.jpg", ("因式分解", "xy")),
-    ("recog-12-print-radical.jpg", ("x-2", "根")),
-    ("recog-14-hand-rationalize.jpg", ("√3", "sqrt")),
-    ("recog-18-print-SSA.jpg", ("全等",)),
+CASES = [
+    ("recog-01-print-perfect-square.jpg", ("(x+y)", "x+y", "x²+y²", "x^2+y^2")),
+    ("recog-06-hand-factor.jpg", ("因式分解", "xy", "-xy")),
+    ("recog-12-print-radical.jpg", ("x-2", "根", "√")),
+    ("recog-14-hand-rationalize.jpg", ("√3", "sqrt", "有理化")),
+    ("recog-18-print-SSA.jpg", ("全等", "SSA", "SAS")),
     ("recog-20-hand-SAS.jpg", ("SAS", "夹角", "AB")),
-    ("recog-21-hand-equilateral.jpg", ("a²", "a^2", "等边")),
-    ("recog-23-print-pythagoras.jpg", ("木棒", "7")),
+    ("recog-21-hand-equilateral.jpg", ("a²", "a^2", "等边", "-ab-bc-ac")),
+    ("recog-23-print-pythagoras.jpg", ("木棒", "7", "直角")),
 ]
 
 
-def _needles_ok(stem: str, needles: tuple[str, ...]) -> bool:
-    return any(n in stem for n in needles)
+def test_ingest_503_without_key(monkeypatch):
+    monkeypatch.delenv("DASHSCOPE_API_KEY", raising=False)
+    r = client.post("/ingest", files={"image": ("x.jpg", b"fake", "image/jpeg")})
+    assert r.status_code == 503
 
 
-@pytest.mark.parametrize("filename,needles", CASES)
-def test_ingest_recog_photo(filename: str, needles: tuple[str, ...]):
-    path = RECOG / filename
-    if not path.is_file():
-        pytest.skip(f"missing {path}")
-    with path.open("rb") as f:
-        r = client.post("/ingest", files={"image": (filename, f, "image/jpeg")})
-    assert r.status_code == 200, (filename, r.status_code, r.text)
+def test_ingest_clamps_off_tree(monkeypatch):
+    monkeypatch.setenv("DASHSCOPE_API_KEY", "test-key")
+
+    def fake_vl(raw, mime):
+        return {
+            "stem": "判断 (x+y)²=x²+y² 是否正确。",
+            "options": None,
+            "formula_tex": "(x+y)^2=x^2+y^2",
+            "has_figure": False,
+            "knowledge_id": "not.a.node",
+        }
+
+    monkeypatch.setattr("ingest._call_vl", fake_vl)
+    r = client.post("/ingest", files={"image": ("x.jpg", b"fake", "image/jpeg")})
+    assert r.status_code == 200
     body = r.json()
-    kid = body["knowledge_id"]
-    assert kid in NODES, (filename, kid)
-    stem = body.get("stem") or ""
-    assert _needles_ok(stem, needles), (filename, stem, needles)
+    assert body["knowledge_id"] in NODES
+    assert body["knowledge_id"] == "poly.perfect-square"
+    assert "(x+y)" in body["stem"]
+    assert body["has_figure"] is False
+
+
+@pytest.mark.skipif(not os.environ.get("DASHSCOPE_API_KEY"), reason="no DASHSCOPE_API_KEY")
+@pytest.mark.parametrize("filename,needles", CASES)
+def test_ingest_live_recog(filename, needles):
+    path = RECOG / filename
+    if not path.exists():
+        pytest.skip(f"missing {filename}")
+    r = client.post(
+        "/ingest",
+        files={"image": (filename, path.read_bytes(), "image/jpeg")},
+    )
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["knowledge_id"] in NODES
+    stem = body["stem"]
+    assert any(n in stem for n in needles), (filename, stem, needles)

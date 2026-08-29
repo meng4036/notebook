@@ -7,11 +7,11 @@
 
 - `GET /tree` 冻结知识点树
 - `GET /gold` 评测金标
-- `POST /tag` 题干预打知识点
-- `POST /variants` 同错因变式
+- `POST /tag` 题干预打知识点（规则，不接模型）
+- `POST /variants` 同错因变式（改数字硬校验，不接模型）
 - `POST /ingest` 拍题识别（multipart 字段名 `image`）
 
-`POST /ingest` 调用 DashScope 兼容模式的 Qwen-VL，只抽题、不给答案。返回：
+`POST /ingest` 一次调用 DashScope 兼容模式的 Qwen-VL，只抽题、不给答案。返回：
 
 ```json
 {"stem":"...","options":null,"formula_tex":null,"has_figure":false,"knowledge_id":"..."}

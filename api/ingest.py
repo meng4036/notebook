@@ -4,109 +4,113 @@ import base64
 import json
 import os
 import re
+from typing import Any
 
-from tagger import NODES, TREE, tag
+from openai import OpenAI
 
-DASHSCOPE_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+from tagger import NODES, tag
+
+DASHSCOPE_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 DEFAULT_MODEL = "qwen-vl-max"
 
 
 class MissingApiKeyError(RuntimeError):
-    """Raised when DASHSCOPE_API_KEY is missing."""
+    pass
 
 
-def _knowledge_catalog() -> str:
-    lines: list[str] = []
-    for ch in TREE["chapters"]:
-        for n in ch["nodes"]:
-            lines.append(f"- {n['id']}: {n['label']} （{ch['label']}）")
-    return "\n".join(lines)
+class IngestError(RuntimeError):
+    pass
 
 
-def _strip_fences(text: str) -> str:
-    t = (text or "").strip()
-    m = re.search(r"```(?:json)?\s*([\s\S]*?)```", t)
-    if m:
-        return m.group(1).strip()
-    return t
-
-
-def _parse_json(text: str) -> dict:
-    t = _strip_fences(text)
-    try:
-        data = json.loads(t)
-    except json.JSONDecodeError:
-        start, end = t.find("{"), t.rfind("}")
-        if start < 0 or end <= start:
-            raise
-        data = json.loads(t[start : end + 1])
-    if not isinstance(data, dict):
-        raise ValueError("ingest model JSON is not an object")
-    return data
+def _tree_lines() -> str:
+    return "\n".join(
+        f"- {nid}: {info['label']}" for nid, info in NODES.items()
+    )
 
 
 def _prompt() -> str:
     return (
-        "你是初中数学错题识别器。只提取题目本身，不要解题、不要给答案、不要批改。\n"
-        "若是手写作业，只抽出印刷或手写的【题目】；忽略学生的典型错误演算、草稿、对错标记。\n"
-        "只输出一个 JSON 对象，不要 markdown 围栏，不要其它文字。字段：\n"
-        '- "stem": 题干字符串\n'
-        '- "options": 选项字符串列表，没有选项则为 null\n'
-        '- "formula_tex": 题中主要公式的 TeX，没有则为 null\n'
-        '- "has_figure": 是否有几何图/示意图，布尔\n'
-        '- "knowledge_id": 必须从下列冻结知识点 id 中选一个\n\n'
-        "知识点枚举：\n"
-        f"{_knowledge_catalog()}\n"
+        "你是初中数学错题录入助手。只从这张照片抽出题目本身，不要给答案，不要批改。\n"
+        "手写卷上若有典型错解、演算过程，忽略它们，只保留题干。\n"
+        "几何图形不要矢量化，有图就把 has_figure 设为 true。\n"
+        "knowledge_id 必须从下面冻结树里选一个 id，禁止自造。\n\n"
+        f"{_tree_lines()}\n\n"
+        "只输出一段 JSON，不要 markdown 围栏，字段：\n"
+        '{"stem":"题干字符串","options":null或字符串数组,"formula_tex":null或TeX,'
+        '"has_figure":true或false,"knowledge_id":"树上的id"}'
     )
 
 
-def ingest_image(image_bytes: bytes, mime: str = "image/jpeg") -> dict:
-    api_key = (os.environ.get("DASHSCOPE_API_KEY") or "").strip()
-    if not api_key:
-        raise MissingApiKeyError("DASHSCOPE_API_KEY is not set")
+def _parse_json(text: str) -> dict[str, Any]:
+    raw = (text or "").strip()
+    if raw.startswith("```"):
+        raw = re.sub(r"^```(?:json)?\s*", "", raw)
+        raw = re.sub(r"\s*```$", "", raw)
+    start, end = raw.find("{"), raw.rfind("}")
+    if start < 0 or end <= start:
+        raise IngestError("vision did not return JSON")
+    data = json.loads(raw[start : end + 1])
+    if not isinstance(data, dict):
+        raise IngestError("vision JSON is not an object")
+    return data
 
-    model = (os.environ.get("QWEN_VL_MODEL") or DEFAULT_MODEL).strip() or DEFAULT_MODEL
-    if not mime or not mime.startswith("image/"):
-        mime = "image/jpeg"
 
-    from openai import OpenAI
-
-    data_url = f"data:{mime};base64,{base64.b64encode(image_bytes).decode('ascii')}"
-    client = OpenAI(api_key=api_key, base_url=DASHSCOPE_BASE_URL)
+def _call_vl(raw: bytes, mime: str) -> dict[str, Any]:
+    key = os.environ.get("DASHSCOPE_API_KEY", "").strip()
+    if not key:
+        raise MissingApiKeyError("DASHSCOPE_API_KEY missing")
+    model = os.environ.get("QWEN_VL_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL
+    b64 = base64.b64encode(raw).decode("ascii")
+    media = mime if mime.startswith("image/") else "image/jpeg"
+    client = OpenAI(api_key=key, base_url=DASHSCOPE_BASE)
     resp = client.chat.completions.create(
         model=model,
+        temperature=0,
         messages=[
             {
                 "role": "user",
                 "content": [
-                    {"type": "image_url", "image_url": {"url": data_url}},
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:{media};base64,{b64}"},
+                    },
                     {"type": "text", "text": _prompt()},
                 ],
             }
         ],
-        temperature=0,
     )
-    raw = (resp.choices[0].message.content or "") if resp.choices else ""
-    data = _parse_json(raw)
+    text = (resp.choices[0].message.content or "").strip()
+    return _parse_json(text)
 
-    stem = data.get("stem") if isinstance(data.get("stem"), str) else ""
+
+def ingest_image(raw: bytes, mime: str = "image/jpeg") -> dict[str, Any]:
+    if not raw:
+        raise IngestError("empty image")
+    data = _call_vl(raw, mime)
+    stem = str(data.get("stem") or "").strip()
+    if not stem:
+        raise IngestError("empty stem")
     options = data.get("options")
-    if not isinstance(options, list):
-        options = None
-    else:
+    if options is not None:
+        if not isinstance(options, list):
+            raise IngestError("options must be a list or null")
         options = [str(x) for x in options]
+        if not options:
+            options = None
     formula_tex = data.get("formula_tex")
-    if formula_tex is not None and not isinstance(formula_tex, str):
-        formula_tex = str(formula_tex)
+    if formula_tex is not None:
+        formula_tex = str(formula_tex).strip() or None
     has_figure = bool(data.get("has_figure"))
-    knowledge_id = data.get("knowledge_id")
-    if not isinstance(knowledge_id, str) or knowledge_id not in NODES:
-        knowledge_id = tag(stem, options)["knowledge_id"]
-
+    kid = str(data.get("knowledge_id") or "").strip()
+    if kid not in NODES:
+        fallback = tag(stem, options)
+        kid = fallback["knowledge_id"]
+    if kid not in NODES:
+        raise IngestError("knowledge_id not on tree")
     return {
         "stem": stem,
         "options": options,
         "formula_tex": formula_tex,
         "has_figure": has_figure,
-        "knowledge_id": knowledge_id,
+        "knowledge_id": kid,
     }

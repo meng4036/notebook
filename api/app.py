@@ -7,7 +7,7 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from ingest import MissingApiKeyError, ingest_image
+from ingest import MissingApiKeyError, IngestError, ingest_image
 from tagger import TREE, NODES, tag
 from variants import generate
 
@@ -86,6 +86,8 @@ async def post_ingest(image: UploadFile = File(...)):
         result = ingest_image(raw, mime)
     except MissingApiKeyError as e:
         raise HTTPException(503, str(e)) from e
+    except IngestError as e:
+        raise HTTPException(400, str(e)) from e
     if result["knowledge_id"] not in NODES:
         raise HTTPException(400, "knowledge_id not on tree")
     return {
