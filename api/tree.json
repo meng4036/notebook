@@ -1,16 +1,184 @@
 {
   "version": "0.1",
-  "item_types": ["判断", "选择", "填空", "化简计算", "因式分解", "求解", "分类讨论"],
+  "item_types": [
+    "判断",
+    "选择",
+    "填空",
+    "化简计算",
+    "因式分解",
+    "求解",
+    "分类讨论"
+  ],
   "chapters": [
-    {"id": "ch11", "term": "八上", "label": "三角形", "nodes": [{"id": "tri.sides", "label": "三角形的边"}, {"id": "tri.polygon", "label": "内角与外角 / 多边形"}, {"id": "tri.isosceles", "label": "等腰三角形（含分类讨论）"}, {"id": "tri.equilateral", "label": "等边三角形判定"}]},
-    {"id": "ch12", "term": "八上", "label": "全等三角形", "nodes": [{"id": "cong.sas", "label": "SAS（两边夹角）"}, {"id": "cong.ssa", "label": "SSA 不能判定"}, {"id": "cong.hl", "label": "HL（直角三角形特例）"}]},
-    {"id": "ch13", "term": "八上", "label": "轴对称", "nodes": [{"id": "sym.axis", "label": "轴对称性质（≠ 全等）"}]},
-    {"id": "ch14", "term": "八上", "label": "整式乘法与因式分解", "nodes": [{"id": "poly.perfect-square", "label": "完全平方公式"}, {"id": "poly.factor-def", "label": "因式分解定义（结果必须是积）"}, {"id": "poly.common-factor", "label": "提公因式（含漏 1、系数最大公约数、整体）"}, {"id": "poly.diff-of-squares", "label": "平方差（先提公因式、分解彻底、连续分解）"}]},
-    {"id": "ch15", "term": "八上", "label": "分式", "nodes": [{"id": "frac.basic", "label": "分式"}]},
-    {"id": "ch16", "term": "八下", "label": "二次根式", "nodes": [{"id": "rad.abs", "label": "√a²=|a|"}, {"id": "rad.domain", "label": "二次根式有意义（被开方数≥0）"}, {"id": "rad.rationalize", "label": "分母有理化"}, {"id": "rad.like", "label": "同类二次根式"}]},
-    {"id": "ch17", "term": "八下", "label": "勾股定理", "nodes": [{"id": "pyg.theorem", "label": "勾股定理"}, {"id": "pyg.converse", "label": "勾股逆定理（先找最长边）"}]},
-    {"id": "ch18", "term": "八下", "label": "平行四边形", "nodes": [{"id": "para.judge", "label": "平行四边形判定"}, {"id": "rect.judge", "label": "矩形判定（vs 菱形）"}]},
-    {"id": "ch19", "term": "八下", "label": "一次函数", "nodes": [{"id": "lin.mono", "label": "一次函数单调性（k 的符号、端点对应）"}, {"id": "lin.undetermined", "label": "待定系数法（含分类）"}]},
-    {"id": "ch20", "term": "八下", "label": "数据的分析", "nodes": [{"id": "stat.center", "label": "众数 / 中位数 / 平均数"}, {"id": "stat.variance", "label": "方差（稳定=方差小）"}]}
+    {
+      "id": "ch11",
+      "term": "八上",
+      "label": "三角形",
+      "nodes": [
+        {
+          "id": "tri.sides",
+          "label": "三角形的边"
+        },
+        {
+          "id": "tri.polygon",
+          "label": "内角与外角 / 多边形"
+        },
+        {
+          "id": "tri.isosceles",
+          "label": "等腰三角形（含分类讨论）"
+        },
+        {
+          "id": "tri.equilateral",
+          "label": "等边三角形判定"
+        }
+      ]
+    },
+    {
+      "id": "ch12",
+      "term": "八上",
+      "label": "全等三角形",
+      "nodes": [
+        {
+          "id": "cong.sas",
+          "label": "SAS（两边夹角）"
+        },
+        {
+          "id": "cong.ssa",
+          "label": "SSA 不能判定"
+        },
+        {
+          "id": "cong.hl",
+          "label": "HL（直角三角形特例）"
+        }
+      ]
+    },
+    {
+      "id": "ch13",
+      "term": "八上",
+      "label": "轴对称",
+      "nodes": [
+        {
+          "id": "sym.axis",
+          "label": "轴对称性质（≠ 全等）"
+        }
+      ]
+    },
+    {
+      "id": "ch14",
+      "term": "八上",
+      "label": "整式乘法与因式分解",
+      "nodes": [
+        {
+          "id": "poly.perfect-square",
+          "label": "完全平方公式"
+        },
+        {
+          "id": "poly.factor-def",
+          "label": "因式分解定义（结果必须是积）"
+        },
+        {
+          "id": "poly.common-factor",
+          "label": "提公因式（含漏 1、系数最大公约数、整体）"
+        },
+        {
+          "id": "poly.diff-of-squares",
+          "label": "平方差（先提公因式、分解彻底、连续分解）"
+        }
+      ]
+    },
+    {
+      "id": "ch15",
+      "term": "八上",
+      "label": "分式",
+      "nodes": [
+        {
+          "id": "frac.basic",
+          "label": "分式"
+        }
+      ]
+    },
+    {
+      "id": "ch16",
+      "term": "八下",
+      "label": "二次根式",
+      "nodes": [
+        {
+          "id": "rad.abs",
+          "label": "√a²=|a|"
+        },
+        {
+          "id": "rad.domain",
+          "label": "二次根式有意义（被开方数≥0）"
+        },
+        {
+          "id": "rad.rationalize",
+          "label": "分母有理化"
+        },
+        {
+          "id": "rad.like",
+          "label": "同类二次根式"
+        }
+      ]
+    },
+    {
+      "id": "ch17",
+      "term": "八下",
+      "label": "勾股定理",
+      "nodes": [
+        {
+          "id": "pyg.theorem",
+          "label": "勾股定理"
+        },
+        {
+          "id": "pyg.converse",
+          "label": "勾股逆定理（先找最长边）"
+        }
+      ]
+    },
+    {
+      "id": "ch18",
+      "term": "八下",
+      "label": "平行四边形",
+      "nodes": [
+        {
+          "id": "para.judge",
+          "label": "平行四边形判定"
+        },
+        {
+          "id": "rect.judge",
+          "label": "矩形判定（vs 菱形）"
+        }
+      ]
+    },
+    {
+      "id": "ch19",
+      "term": "八下",
+      "label": "一次函数",
+      "nodes": [
+        {
+          "id": "lin.mono",
+          "label": "一次函数单调性（k 的符号、端点对应）"
+        },
+        {
+          "id": "lin.undetermined",
+          "label": "待定系数法（含分类）"
+        }
+      ]
+    },
+    {
+      "id": "ch20",
+      "term": "八下",
+      "label": "数据的分析",
+      "nodes": [
+        {
+          "id": "stat.center",
+          "label": "众数 / 中位数 / 平均数"
+        },
+        {
+          "id": "stat.variance",
+          "label": "方差（稳定=方差小）"
+        }
+      ]
+    }
   ]
 }
