@@ -177,7 +177,7 @@ export default function App() {
             <button className="back" onClick={() => setPage('list')}>←</button>
             <div>
               <h1>校对知识点</h1>
-              <p className="sub">确认对了再出变式</p>
+              <p className="sub">确4认对了再出变式</p>
             </div>
           </div>
           <div className="scroll">
