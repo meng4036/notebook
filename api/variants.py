@@ -13,7 +13,6 @@ def _shift_int(n: int, k: int) -> int:
     return sign * (abs(n) + k)
 
 
-
 LETTER_MAPS = [
     {"x": "a", "y": "b"},
     {"x": "m", "y": "n"},
