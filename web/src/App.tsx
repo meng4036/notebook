@@ -128,6 +128,7 @@ export default function App() {
     setPage('var')
   }
 
+
   async function sendCard(asPdf = false) {
     if (!cardRef.current || !cur || kept.length === 0) return
     setBusy(true)
@@ -213,7 +214,7 @@ export default function App() {
           </div>
           <div className="cta">
             <button className="primary" onClick={makeVariants}>
-              确认，生成变式
+              确4认，生成变式
             </button>
           </div>
         </>
@@ -231,7 +232,7 @@ export default function App() {
           <div className="scroll">
             <div className="qty">
               题量
-              <button onClick={() => setN((x) => Math.max(2, x - 1))}>−</button>
+              <button onClick={() => setN((x) => Math.max(2, x - 1))}−</button>
               <b>{n}</b>
               <button onClick={() => setN((x) => Math.min(5, x + 1))}>+</button>
             </div>
